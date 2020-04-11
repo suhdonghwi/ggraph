@@ -22,15 +22,6 @@ function drawAxis({ctx, width, height, offset}: CanvasData) {
   ctx.stroke();
 }
 
-function drawPixel({width}: CanvasData, imageData: ImageData, pos: Pos, r: number, g: number, b: number, a: number) {
-  const index = (Math.round(pos.x) + Math.round(pos.y) * width) * 4;
-
-  imageData.data[index + 0] = r;
-  imageData.data[index + 1] = g;
-  imageData.data[index + 2] = b;
-  imageData.data[index + 3] = a;
-}
-
 function convertPos({width, height, offset, scale}: CanvasData, pos: Pos) {
   return {
     x: width / 2 + (pos.x * scale) + offset.x,
@@ -47,7 +38,6 @@ function getRange(size: number, scale: number, offset: number) {
 
 function drawFunction(data: CanvasData, f: (x: number) => number) {
   const {ctx, width, height, offset, scale} = data;
-  const imageData = data.ctx.getImageData(0, 0, width, height);
 
   const x = getRange(width, scale, offset.x);
   let prevPos: Pos | null = null;
@@ -67,7 +57,6 @@ function drawFunction(data: CanvasData, f: (x: number) => number) {
 
   ctx.lineWidth = 2;
   ctx.stroke();
-  //ctx.putImageData(imageData, 0, 0);
 }
 
 function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => number) {
