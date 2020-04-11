@@ -7,6 +7,7 @@ interface CanvasData {
   width: number;
   height: number;
   offset: Pos;
+  scale: number;
 }
 
 function drawAxis({ctx, width, height, offset}: CanvasData) {
@@ -21,8 +22,8 @@ function drawAxis({ctx, width, height, offset}: CanvasData) {
   ctx.stroke();
 }
 
-function drawPixel(canvasWidth: number, imageData: ImageData, pos: Pos, r: number, g: number, b: number, a: number) {
-  const index = (Math.round(pos.x) + Math.round(pos.y) * canvasWidth) * 4;
+function drawPixel({width}: CanvasData, imageData: ImageData, pos: Pos, r: number, g: number, b: number, a: number) {
+  const index = (Math.round(pos.x) + Math.round(pos.y) * width) * 4;
 
   imageData.data[index + 0] = r;
   imageData.data[index + 1] = g;
@@ -30,19 +31,25 @@ function drawPixel(canvasWidth: number, imageData: ImageData, pos: Pos, r: numbe
   imageData.data[index + 3] = a;
 }
 
-function convertPos({width, height, offset}: CanvasData, pos: Pos) {
-  return {x: width / 2 + pos.x + offset.x, y: height / 2 - pos.y - offset.y};
+function convertPos({width, height, offset, scale}: CanvasData, pos: Pos) {
+  return {
+    x: width / 2 + (pos.x * scale) + offset.x,
+    y: height / 2 - (pos.y * scale) - offset.y
+  };
 }
 
 
 function drawFunction(data: CanvasData, f: (x: number) => number) {
-  const imageData = data.ctx.getImageData(0, 0, data.width, data.height);
+  const {ctx, width, height, offset, scale} = data;
+  const imageData = data.ctx.getImageData(0, 0, width, height);
 
-  for (let i = -(data.width / 2 + data.offset.x); i < data.width / 2 - data.offset.x; i += 0.001) {
+  const startX = -(width / 2 + offset.x) / scale;
+  const endX = (width / 2 - offset.x) / scale;
+  for (let i = startX; i < endX; i += (endX - startX) / (width ** 2)) {
     const drawPos = convertPos(data, {x: i, y: f(i)});
-    drawPixel(data.width, imageData, drawPos, 0, 0, 0, 255);
+    drawPixel(data, imageData, drawPos, 0, 0, 0, 255);
   }
-  data.ctx.putImageData(imageData, 0, 0);
+  ctx.putImageData(imageData, 0, 0);
 }
 
 export default function Canvas() {
@@ -52,12 +59,18 @@ export default function Canvas() {
 
   useEffect(() => {
     const ctx = canvasRef.current!.getContext('2d')!;
-    const canvasData = {ctx, width: canvasWidth, height: canvasHeight, offset: {x: 100, y: 100}};
+    const canvasData = {
+      ctx,
+      width: canvasWidth,
+      height: canvasHeight,
+      offset: {x: 0, y: 0},
+      scale: 0.5,
+    };
 
     drawAxis(canvasData);
-    drawFunction(canvasData, x => x + 10);
-    drawFunction(canvasData, x => Math.sin(x / 10) * 30);
-    drawFunction(canvasData, x => Math.cos(x / 10) * 30);
+    //drawFunction(canvasData, x => x + 10);
+    //drawFunction(canvasData, x => Math.sin(x / 10) * 30);
+    //drawFunction(canvasData, x => Math.cos(x / 10) * 30);
     drawFunction(canvasData, x => Math.tan(x / 30) * 30);
 
   }, [canvasRef]);
