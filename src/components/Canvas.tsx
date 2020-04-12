@@ -1,6 +1,6 @@
 import React, {useRef, useEffect} from 'react';
 
-import Pos from '../Pos';
+import Pos, {midpoint} from '../Pos';
 
 interface CanvasData {
   ctx: CanvasRenderingContext2D;
@@ -59,20 +59,19 @@ function drawFunction(data: CanvasData, f: (x: number) => number) {
   const x = getRange(width, scale, offset.x);
 
   let points: Array<Pos> = [];
-  for (let i = x.start; i < x.end; i += (x.end - x.start) / (width ** 2)) {
+  for (let i = x.start; i < x.end; i += (x.end - x.start) / (width ** 1.5)) {
     const drawPos = convertPos(data, {x: i, y: f(i)});
     points.push(drawPos);
   }
-
   drawPoints(data, points);
 }
 
 function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => number) {
-  const {ctx, width, height, offset, scale} = data;
+  const {width, height, offset, scale} = data;
 
   const x = getRange(width, scale, offset.x);
   const y = getRange(height, scale, offset.y);
-  const factor = 500;
+  const factor = width;
 
   let posMatrix = [];
   for (let i = y.start; i < y.end; i += (y.end - y.start) / factor) {
@@ -86,26 +85,25 @@ function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => number)
     posMatrix.push(posVector);
   }
 
-  let prevPos: Pos | null = null;
-  ctx.beginPath();
   for (let i = 0; i < posMatrix.length - 1; i++) {
     for (let j = 0; j < posMatrix[i].length - 1; j++) {
-      if (![posMatrix[i][j].isPositive, posMatrix[i + 1][j].isPositive, posMatrix[i][j + 1].isPositive, posMatrix[i + 1][j + 1].isPositive].every((val, _, arr) => val ===
-        arr[0])) {
-        const currentPos = posMatrix[i][j].pos;
-        if (prevPos !== null && Math.abs(currentPos.y - prevPos.y) < height) {
-          ctx.moveTo(prevPos.x, prevPos.y);
-          ctx.lineTo(currentPos.x, currentPos.y);
-        } else {
-        }
+      const points = [];
+      const spots = [
+        [posMatrix[i][j], posMatrix[i][j + 1]],
+        [posMatrix[i][j], posMatrix[i + 1][j]],
+        [posMatrix[i + 1][j], posMatrix[i + 1][j + 1]],
+        [posMatrix[i][j + 1], posMatrix[i + 1][j + 1]],
+      ];
 
-        prevPos = currentPos;
+      for (const spot of spots) {
+        if (spot[0].isPositive !== spot[1].isPositive) {
+          points.push(midpoint(spot[0].pos, spot[1].pos));
+        }
       }
+
+      drawPoints(data, points);
     }
   }
-
-  ctx.lineWidth = 1;
-  ctx.stroke();
 }
 
 export default function Canvas() {
@@ -120,17 +118,29 @@ export default function Canvas() {
       width: canvasWidth,
       height: canvasHeight,
       offset: {x: 0, y: 0},
-      scale: 1,
+      scale: 100,
     };
 
     drawAxis(canvasData);
     //drawFunction(canvasData, x => x + 10);
     //drawFunction(canvasData, x => Math.sin(x / 10) * 30);
     //drawFunction(canvasData, x => Math.cos(x / 10) * 30);
-    drawFunction(canvasData, x => (Math.tan(x)));
+    //drawFunction(canvasData, x => (Math.tan(x)));
     //drawFunction(canvasData, x => x);
-    // drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
+    //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
+    //drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));
+    //drawFunctionGrid(canvasData, (x, y) => x ** y - y ** x);
     //drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
+    //drawFunction(canvasData, x => x ** x);
+    //drawFunctionGrid(canvasData, (x, y) => x ** x - y);
+    /*drawFunction(canvasData, (x) => {
+      let sum = 0;
+      for (let n = 0; n <= 100; n++) {
+        sum += 0.5 ** n * Math.cos(1.5 ** n * Math.PI * x)
+      }
+
+      return sum;
+    });*/
 
   }, [canvasRef]);
 
