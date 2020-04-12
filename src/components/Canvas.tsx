@@ -41,7 +41,6 @@ function drawFunction(data: CanvasData, f: (x: number) => number) {
 
   const x = getRange(width, scale, offset.x);
   let prevPos: Pos | null = null;
-
   ctx.beginPath();
   for (let i = x.start; i < x.end; i += (x.end - x.start) / (width ** 2)) {
     const drawPos = convertPos(data, {x: i, y: f(i)});
@@ -55,7 +54,7 @@ function drawFunction(data: CanvasData, f: (x: number) => number) {
     prevPos = drawPos;
   }
 
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 1;
   ctx.stroke();
 }
 
@@ -66,14 +65,38 @@ function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => number)
   const y = getRange(height, scale, offset.y);
   const factor = 500;
 
-  for (let i = x.start; i < x.end; i += (x.end - x.start) / factor) {
-    for (let j = y.start; j < y.end; j += (y.end - y.start) / factor) {
-      const drawPos = convertPos(data, {x: i, y: j});
-      if (f(i, j) >= 0) {
-        ctx.fillRect(drawPos.x, drawPos.y, width / factor, height / factor);
+  let posMatrix = [];
+  for (let i = y.start; i < y.end; i += (y.end - y.start) / factor) {
+    let posVector = [];
+    for (let j = x.start; j < x.end; j += (x.end - x.start) / factor) {
+      posVector.push({
+        isPositive: f(j, i) >= 0,
+        pos: convertPos(data, {x: j, y: i})
+      });
+    }
+    posMatrix.push(posVector);
+  }
+
+  let prevPos: Pos | null = null;
+  ctx.beginPath();
+  for (let i = 0; i < posMatrix.length - 1; i++) {
+    for (let j = 0; j < posMatrix[i].length - 1; j++) {
+      if (![posMatrix[i][j].isPositive, posMatrix[i + 1][j].isPositive, posMatrix[i][j + 1].isPositive, posMatrix[i + 1][j + 1].isPositive].every((val, _, arr) => val ===
+        arr[0])) {
+        const currentPos = posMatrix[i][j].pos;
+        if (prevPos !== null && Math.abs(currentPos.y - prevPos.y) < height) {
+          ctx.moveTo(prevPos.x, prevPos.y);
+          ctx.lineTo(currentPos.x, currentPos.y);
+        } else {
+        }
+
+        prevPos = currentPos;
       }
     }
   }
+
+  ctx.lineWidth = 1;
+  ctx.stroke();
 }
 
 export default function Canvas() {
@@ -95,9 +118,9 @@ export default function Canvas() {
     //drawFunction(canvasData, x => x + 10);
     //drawFunction(canvasData, x => Math.sin(x / 10) * 30);
     //drawFunction(canvasData, x => Math.cos(x / 10) * 30);
-    drawFunction(canvasData, x => Math.abs(Math.tan(x)));
+    //drawFunction(canvasData, x => (Math.tan(x)));
     //drawFunction(canvasData, x => x);
-    //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 16);
+    drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
     //drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
 
   }, [canvasRef]);
