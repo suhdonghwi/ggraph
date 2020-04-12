@@ -41,8 +41,6 @@ function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
   for (const point of points) {
     if (prevPoint !== null && Math.abs(point.y - prevPoint.y) < height) {
       ctx.lineTo(point.x, point.y);
-    } else {
-      ctx.moveTo(point.x, point.y);
     }
 
     prevPoint = point;
