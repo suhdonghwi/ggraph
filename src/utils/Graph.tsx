@@ -42,7 +42,7 @@ function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
   if (points.length === 0) return;
   let prevPoint = points.shift()!;
 
-  //ctx.beginPath();
+  ctx.beginPath();
   ctx.lineWidth = 2;
   ctx.moveTo(prevPoint.x, prevPoint.y);
   for (const point of points) {

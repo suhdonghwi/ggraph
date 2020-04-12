@@ -8,8 +8,8 @@ export default function Canvas() {
   const canvasWidth = 1000;
   const canvasHeight = 800;
 
-  const [scale, setScale] = useState(100);
-  const [moveOffset, setMoveOffset] = useState({x: 0, y: 0});
+  const [scale, setScale] = useState(100); 
+   const [moveOffset, setMoveOffset] = useState({x: 0, y: 0});
 
   useEffect(() => {
     const ctx = canvasRef.current!.getContext('2d')!;
@@ -35,7 +35,7 @@ export default function Canvas() {
     //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
     //drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));
     //drawFunctionGrid(canvasData, (x, y) => x ** y - y ** x);
-    //drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
+    drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
     //drawFunction(canvasData, x => x ** x);
     //drawFunctionGrid(canvasData, (x, y) => x ** x - y);
     //drawFunction(canvasData, (x) => {
