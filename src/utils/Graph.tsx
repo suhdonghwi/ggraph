@@ -35,14 +35,16 @@ function getRange(size: number, scale: number, offset: number) {
 }
 
 function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
+  if (points.length === 0) return;
+
   let prevPoint: Pos | null = null;
   ctx.beginPath();
 
+  ctx.moveTo(points[0].x, points[0].y);
   for (const point of points) {
     if (prevPoint !== null && Math.abs(point.y - prevPoint.y) < height) {
       ctx.lineTo(point.x, point.y);
     }
-
     prevPoint = point;
   }
 

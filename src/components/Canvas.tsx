@@ -24,11 +24,11 @@ export default function Canvas() {
     //drawFunction(canvasData, x => Math.cos(x / 10) * 30);
     //drawFunction(canvasData, x => (Math.tan(x)));
     //drawFunction(canvasData, x => x);
-    //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
-    //drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));
+    drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
+    drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));
     //drawFunctionGrid(canvasData, (x, y) => x ** y - y ** x);
     //drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
-    drawFunction(canvasData, x => x ** x);
+    //drawFunction(canvasData, x => x ** x);
     //drawFunctionGrid(canvasData, (x, y) => x ** x - y);
     //drawFunction(canvasData, (x) => {
     //  let sum = 0;
