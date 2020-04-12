@@ -36,26 +36,35 @@ function getRange(size: number, scale: number, offset: number) {
   };
 }
 
-function drawFunction(data: CanvasData, f: (x: number) => number) {
-  const {ctx, width, height, offset, scale} = data;
-
-  const x = getRange(width, scale, offset.x);
-  let prevPos: Pos | null = null;
+function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
+  let prevPoint: Pos | null = null;
   ctx.beginPath();
-  for (let i = x.start; i < x.end; i += (x.end - x.start) / (width ** 2)) {
-    const drawPos = convertPos(data, {x: i, y: f(i)});
 
-    if (prevPos !== null && Math.abs(drawPos.y - prevPos.y) < height) {
-      ctx.lineTo(drawPos.x, drawPos.y);
+  for (const point of points) {
+    if (prevPoint !== null && Math.abs(point.y - prevPoint.y) < height) {
+      ctx.lineTo(point.x, point.y);
     } else {
-      ctx.moveTo(drawPos.x, drawPos.y);
+      ctx.moveTo(point.x, point.y);
     }
 
-    prevPos = drawPos;
+    prevPoint = point;
   }
 
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.stroke();
+}
+
+function drawFunction(data: CanvasData, f: (x: number) => number) {
+  const {width, offset, scale} = data;
+  const x = getRange(width, scale, offset.x);
+
+  let points: Array<Pos> = [];
+  for (let i = x.start; i < x.end; i += (x.end - x.start) / (width ** 2)) {
+    const drawPos = convertPos(data, {x: i, y: f(i)});
+    points.push(drawPos);
+  }
+
+  drawPoints(data, points);
 }
 
 function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => number) {
@@ -111,16 +120,16 @@ export default function Canvas() {
       width: canvasWidth,
       height: canvasHeight,
       offset: {x: 0, y: 0},
-      scale: 10,
+      scale: 1,
     };
 
     drawAxis(canvasData);
     //drawFunction(canvasData, x => x + 10);
     //drawFunction(canvasData, x => Math.sin(x / 10) * 30);
     //drawFunction(canvasData, x => Math.cos(x / 10) * 30);
-    //drawFunction(canvasData, x => (Math.tan(x)));
+    drawFunction(canvasData, x => (Math.tan(x)));
     //drawFunction(canvasData, x => x);
-    drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
+    // drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
     //drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
 
   }, [canvasRef]);
