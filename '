@@ -15,14 +15,14 @@ export default function Canvas() {
       width: canvasWidth,
       height: canvasHeight,
       offset: {x: 0, y: 0},
-      scale: 50,
+      scale: 10,
     };
 
     drawAxis(canvasData);
     //drawFunction(canvasData, x => x + 10);
     //drawFunction(canvasData, x => Math.sin(x));
     //drawFunction(canvasData, x => Math.cos(x / 10) * 30);
-    drawFunction(canvasData, x => (Math.tan(x)));
+    //drawFunction(canvasData, x => (Math.tan(x)));
     //drawFunction(canvasData, x => x % 5);
     //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
     //drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));

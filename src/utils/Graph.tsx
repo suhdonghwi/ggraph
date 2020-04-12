@@ -34,21 +34,26 @@ function getRange(size: number, scale: number, offset: number) {
   };
 }
 
+function clamp(num: number, min: number, max: number) {
+  return num <= min ? min : num >= max ? max : num;
+}
+
 function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
   if (points.length === 0) return;
+  let prevPoint = points.shift()!;
 
-  let prevPoint: Pos | null = null;
-  ctx.beginPath();
-
-  ctx.moveTo(points[0].x, points[0].y);
+  //ctx.beginPath();
+  ctx.lineWidth = 2;
+  ctx.moveTo(prevPoint.x, prevPoint.y);
   for (const point of points) {
-    if (prevPoint !== null && Math.abs(point.y - prevPoint.y) < height) {
+    if (Math.abs(point.y - prevPoint.y) < height) {
       ctx.lineTo(point.x, point.y);
+    } else {
+      ctx.moveTo(point.x, clamp(point.y, -height, height));
     }
     prevPoint = point;
   }
 
-  ctx.lineWidth = 2;
   ctx.stroke();
 }
 
@@ -57,7 +62,7 @@ export function drawFunction(data: CanvasData, f: (x: number) => number) {
   const x = getRange(width, scale, offset.x);
 
   let points: Array<Pos> = [];
-  const fineness = 100;
+  const fineness = 150;
   for (let i = x.start; i < x.end; i += (x.end - x.start) / (width / scale * fineness)) {
     const drawPos = convertPos(data, {x: i, y: f(i)});
     points.push(drawPos);
