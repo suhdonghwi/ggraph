@@ -59,7 +59,8 @@ function drawFunction(data: CanvasData, f: (x: number) => number) {
   const x = getRange(width, scale, offset.x);
 
   let points: Array<Pos> = [];
-  for (let i = x.start; i < x.end; i += (x.end - x.start) / (width ** 1.5)) {
+  const fineness = 100;
+  for (let i = x.start; i < x.end; i += (x.end - x.start) / (width / scale * fineness)) {
     const drawPos = convertPos(data, {x: i, y: f(i)});
     points.push(drawPos);
   }
@@ -125,7 +126,7 @@ export default function Canvas() {
     //drawFunction(canvasData, x => x + 10);
     //drawFunction(canvasData, x => Math.sin(x / 10) * 30);
     //drawFunction(canvasData, x => Math.cos(x / 10) * 30);
-    //drawFunction(canvasData, x => (Math.tan(x)));
+    drawFunction(canvasData, x => (Math.tan(x)));
     //drawFunction(canvasData, x => x);
     //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
     //drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));
@@ -133,14 +134,13 @@ export default function Canvas() {
     //drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
     //drawFunction(canvasData, x => x ** x);
     //drawFunctionGrid(canvasData, (x, y) => x ** x - y);
-    /*drawFunction(canvasData, (x) => {
+    drawFunction(canvasData, (x) => {
       let sum = 0;
       for (let n = 0; n <= 100; n++) {
-        sum += 0.5 ** n * Math.cos(1.5 ** n * Math.PI * x)
+        sum += 0.5 ** n * Math.cos(1 ** n * Math.PI * x)
       }
-
       return sum;
-    });*/
+    });
 
   }, [canvasRef]);
 
