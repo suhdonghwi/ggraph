@@ -1,6 +1,7 @@
 import React, {useRef, useEffect, useState} from 'react';
 
 import {CanvasData, drawAxis, drawFunction, drawFunctionGrid} from '../utils/Graph';
+import Pos from '../utils/Pos';
 
 
 export default function Canvas() {
@@ -10,6 +11,7 @@ export default function Canvas() {
 
   const [scale, setScale] = useState(100);
   const [moveOffset, setMoveOffset] = useState({x: 0, y: 0});
+  const [mouseClicked, setMouseClicked] = useState(false);
 
   useEffect(() => {
     const ctx = canvasRef.current!.getContext('2d')!;
@@ -67,5 +69,23 @@ export default function Canvas() {
     setMoveOffset(offset);
   }
 
-  return <canvas ref={canvasRef} height={canvasHeight} width={canvasWidth} onWheel={handleWheel} />;
+  function handleMouseDown(e: React.MouseEvent<HTMLCanvasElement>) {
+    setMouseClicked(true);
+  }
+
+  function handleMouseUp() {
+    setMouseClicked(false);
+  }
+
+  function handleMouseMove(e: React.MouseEvent<HTMLCanvasElement>) {
+    if (!mouseClicked) return;
+
+    setMoveOffset({
+      x: moveOffset.x + e.movementX * 1.4,
+      y: moveOffset.y - e.movementY * 1.4,
+    });
+  }
+
+  return <canvas ref={canvasRef} height={canvasHeight} width={canvasWidth} onWheel={handleWheel}
+    onMouseDown={handleMouseDown} onMouseLeave={handleMouseUp} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove} />;
 }
