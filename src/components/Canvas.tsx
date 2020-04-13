@@ -11,7 +11,7 @@ export default function Canvas() {
 
   const [scale, setScale] = useState(100);
   const [moveOffset, setMoveOffset] = useState({x: 0, y: 0});
-  const [mouseClicked, setMouseClicked] = useState(false);
+  const [lastClickPos, setLastClickPos] = useState<Pos | undefined>(undefined);
 
   useEffect(() => {
     const ctx = canvasRef.current!.getContext('2d')!;
@@ -70,15 +70,15 @@ export default function Canvas() {
   }
 
   function handleMouseDown(e: React.MouseEvent<HTMLCanvasElement>) {
-    setMouseClicked(true);
+    setLastClickPos({x: e.screenX, y: e.screenY});
   }
 
   function handleMouseUp() {
-    setMouseClicked(false);
+    setLastClickPos(undefined);
   }
 
   function handleMouseMove(e: React.MouseEvent<HTMLCanvasElement>) {
-    if (!mouseClicked) return;
+    if (lastClickPos === undefined) return;
 
     setMoveOffset({
       x: moveOffset.x + e.movementX * 1.4,
@@ -86,6 +86,42 @@ export default function Canvas() {
     });
   }
 
-  return <canvas ref={canvasRef} height={canvasHeight} width={canvasWidth} onWheel={handleWheel}
-    onMouseDown={handleMouseDown} onMouseLeave={handleMouseUp} onMouseUp={handleMouseUp} onMouseMove={handleMouseMove} />;
+  function handleTouchStart(e: React.TouchEvent<HTMLCanvasElement>) {
+    setLastClickPos({x: e.touches[0].screenX, y: e.touches[0].screenY});
+  }
+
+  function handleTouchMove(e: React.TouchEvent<HTMLCanvasElement>) {
+    if (lastClickPos === undefined) return;
+
+    const touchPos = {
+      x: e.touches[0].screenX,
+      y: e.touches[0].screenY
+    };
+
+    const deltaPos = {
+      x: lastClickPos.x - touchPos.x,
+      y: lastClickPos.y - touchPos.y,
+    }
+
+    setMoveOffset({
+      x: moveOffset.x - deltaPos.x,
+      y: moveOffset.y + deltaPos.y,
+    });
+
+    setLastClickPos(touchPos);
+  }
+
+  return <canvas
+    ref={canvasRef}
+    height={canvasHeight}
+    width={canvasWidth}
+    onWheel={handleWheel}
+    onMouseDown={handleMouseDown}
+    onMouseLeave={handleMouseUp}
+    onMouseUp={handleMouseUp}
+    onMouseMove={handleMouseMove}
+    onTouchStart={handleTouchStart}
+    onTouchMove={handleTouchMove}
+    onTouchEnd={handleMouseUp}
+  />;
 }
