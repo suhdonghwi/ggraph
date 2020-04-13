@@ -13,6 +13,8 @@ export function drawAxis({ctx, width, height, offset}: CanvasData) {
   const yMiddle = height / 2 - offset.y;
   ctx.moveTo(0, yMiddle);
   ctx.lineTo(width, yMiddle);
+
+  ctx.lineWidth = 5;
   ctx.stroke();
 
   ctx.moveTo(xMiddle, 0);
@@ -63,7 +65,7 @@ export function drawFunction(data: CanvasData, f: (x: number) => number) {
   const x = getRange(width, scale, offset.x);
 
   let points: Array<Pos> = [];
-  const fineness = 100;
+  const fineness = 300;
 
   //console.log(x.end - x.start, width / scale * fineness);
   for (let i = x.start; i < x.end; i += (x.end - x.start) / (width / 100 * fineness)) {
