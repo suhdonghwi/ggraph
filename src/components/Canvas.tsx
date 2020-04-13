@@ -30,8 +30,8 @@ export default function Canvas() {
 
     drawAxis(canvasData);
     //drawFunction(canvasData, x => x + 10);
-    //drawFunction(canvasData, x => Math.sin(x));
-    //drawFunction(canvasData, x => Math.cos(x / 10) * 30);
+    drawFunction(canvasData, x => Math.sin(x));
+    drawFunction(canvasData, x => Math.cos(x / 10) * 30);
     //drawFunction(canvasData, x => (Math.tan(x)));
     drawFunction(canvasData, x => x % 1);
     //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 1000);
