@@ -5,11 +5,11 @@ import {CanvasData, drawAxis, drawFunction, drawFunctionGrid} from '../utils/Gra
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasWidth = 1000;
-  const canvasHeight = 800;
+  const canvasWidth = window.innerWidth;
+  const canvasHeight = window.innerHeight - 10;
 
-  const [scale, setScale] = useState(100); 
-   const [moveOffset, setMoveOffset] = useState({x: 0, y: 0});
+  const [scale, setScale] = useState(100);
+  const [moveOffset, setMoveOffset] = useState({x: 0, y: 0});
 
   useEffect(() => {
     const ctx = canvasRef.current!.getContext('2d')!;
@@ -46,7 +46,7 @@ export default function Canvas() {
     //  return sum;
     //});
 
-  }, [canvasRef, scale, moveOffset]);
+  }, [canvasRef, scale, moveOffset, canvasWidth, canvasHeight]);
 
   function handleWheel(e: React.WheelEvent<HTMLCanvasElement>) {
     if (e.deltaY === 0) return;

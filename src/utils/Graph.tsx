@@ -76,7 +76,7 @@ export function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => 
 
   const x = getRange(width, scale, offset.x);
   const y = getRange(height, scale, offset.y);
-  const factor = width;
+  const factor = 300;
 
   let posMatrix = [];
   for (let i = y.start; i < y.end; i += (y.end - y.start) / factor) {
