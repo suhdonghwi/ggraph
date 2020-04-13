@@ -46,7 +46,7 @@ function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
   ctx.lineWidth = 2;
   ctx.moveTo(prevPoint.x, prevPoint.y);
   for (const point of points) {
-    ctx.lineTo(point.x, point.y);
+    ctx.lineTo(point.x, clamp(point.y, -height, height));
     //if (Math.abs(point.y - prevPoint.y) < height) {
     //  ctx.lineTo(point.x, point.y);
     //} else {
@@ -64,7 +64,9 @@ export function drawFunction(data: CanvasData, f: (x: number) => number) {
 
   let points: Array<Pos> = [];
   const fineness = 100;
-  for (let i = x.start; i < x.end; i += (x.end - x.start) / (width / scale * fineness)) {
+
+  //console.log(x.end - x.start, width / scale * fineness);
+  for (let i = x.start; i < x.end; i += (x.end - x.start) / (width / 100 * fineness)) {
     const drawPos = convertPos(data, {x: i, y: f(i)});
     points.push(drawPos);
   }

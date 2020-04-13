@@ -38,12 +38,12 @@ export default function Canvas() {
     //drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));
     //drawFunctionGrid(canvasData, (x, y) => x ** y - y ** x);
     drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
-    //drawFunction(canvasData, x => x ** x);
+    drawFunction(canvasData, x => x ** x);
     //drawFunctionGrid(canvasData, (x, y) => x ** x - y);
     //drawFunction(canvasData, (x) => {
     //  let sum = 0;
-    //  for (let n = 0; n <= 100; n++) {
-    //    sum += 0.5 ** n * Math.cos(5 ** n * Math.PI * x)
+    //  for (let n = 0; n <= 10; n++) {
+    //    sum += 0.5 ** n * Math.cos(3 ** n * Math.PI * x)
     //  }
     //  return sum;
     //});
