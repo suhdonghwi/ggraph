@@ -47,13 +47,17 @@ function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
   ctx.beginPath();
   ctx.lineWidth = 2;
   ctx.moveTo(prevPoint.x, prevPoint.y);
+
+  function isVisible(point: Pos) {
+    return point.y <= height && point.y >= 0;
+  }
+
   for (const point of points) {
-    ctx.lineTo(point.x, clamp(point.y, -height, height));
-    //if (Math.abs(point.y - prevPoint.y) < height) {
-    //  ctx.lineTo(point.x, point.y);
-    //} else {
-    //  ctx.moveTo(point.x, clamp(point.y, -height, height));
-    //}
+    if (isVisible(point) || isVisible(prevPoint)) {
+      ctx.lineTo(point.x, point.y);
+    } else {
+      ctx.moveTo(point.x, point.y);
+    }
     prevPoint = point;
   }
 
@@ -65,7 +69,7 @@ export function drawFunction(data: CanvasData, f: (x: number) => number) {
   const x = getRange(width, scale, offset.x);
 
   let points: Array<Pos> = [];
-  const fineness = 300;
+  const fineness = width;
 
   //console.log(x.end - x.start, width / scale * fineness);
   for (let i = x.start; i < x.end; i += (x.end - x.start) / (width / 100 * fineness)) {
@@ -81,7 +85,7 @@ export function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => 
 
   const x = getRange(width, scale, offset.x);
   const y = getRange(height, scale, offset.y);
-  const factor = 300;
+  const factor = 100;
 
   let posMatrix = [];
   for (let i = y.start; i < y.end; i += (y.end - y.start) / factor) {
@@ -114,4 +118,8 @@ export function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => 
       drawPoints(data, points);
     }
   }
+}
+
+export function drawFunctionQT(data: CanvasData, f: (x: number, y: number) => number, ) {
+
 }
