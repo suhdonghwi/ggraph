@@ -1,7 +1,9 @@
 import React, {useRef, useEffect, useState} from 'react';
+import * as math from 'mathjs';
 
 import {CanvasData, drawAxis, drawFunction, drawFunctionGrid} from '../utils/Graph';
 import Pos from '../utils/Pos';
+
 
 
 export default function Canvas() {
@@ -36,9 +38,13 @@ export default function Canvas() {
     //drawFunction(canvasData, x => x % 1);
     //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 36);
     //drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));
-    drawFunction(canvasData, (x) => Math.tan(x));
+
+    //drawFunction(canvasData, math.compile('tan(x^2)'));
+    drawFunction(canvasData, math.compile('tan(x)'));
+    drawFunction(canvasData, math.compile('x^x'));
+    drawFunction(canvasData, math.compile('1 / (1 + e^(-x))'));
     //drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
-    drawFunction(canvasData, x => x ** x);
+    //drawFunction(canvasData, x => x ** x);
     //drawFunctionGrid(canvasData, (x, y) => x ** x - y);
     //drawFunction(canvasData, (x) => {
     //  let sum = 0;

@@ -1,4 +1,5 @@
 import Pos, {midpoint} from './Pos';
+import * as math from 'mathjs';
 
 export interface CanvasData {
   ctx: CanvasRenderingContext2D;
@@ -65,7 +66,7 @@ function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
   ctx.stroke();
 }
 
-export function drawFunction(data: CanvasData, f: (x: number) => number) {
+export function drawFunction(data: CanvasData, f: math.EvalFunction) {
   const {width, offset, scale} = data;
   const x = getRange(width, scale, offset.x);
 
@@ -75,8 +76,8 @@ export function drawFunction(data: CanvasData, f: (x: number) => number) {
 
   //console.log(x.end - x.start, width / scale * fineness);
   for (let i = x.start; i <= x.end; i += (x.end - x.start) / (width * fineness)) {
-    //const drawPos = convertPos(data, {x: i, y: f(i)});
-    points.push(convertPos(data, {x: i, y: f(i)}));
+    const drawPos = convertPos(data, {x: i, y: f.evaluate({x: i})});
+    points.push(drawPos);
   }
 
   drawPoints(data, points);
