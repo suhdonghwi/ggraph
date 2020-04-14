@@ -122,7 +122,3 @@ export function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => 
     }
   }
 }
-
-export function drawFunctionQT(data: CanvasData, f: (x: number, y: number) => number, ) {
-
-}
