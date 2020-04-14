@@ -45,7 +45,6 @@ function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
   let prevPoint = points.shift()!;
 
   ctx.beginPath();
-  ctx.lineWidth = 2;
   ctx.moveTo(prevPoint.x, prevPoint.y);
 
   function isVisible(point: Pos) {
@@ -56,11 +55,13 @@ function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
     if (isVisible(point) || isVisible(prevPoint)) {
       ctx.lineTo(point.x, point.y);
     } else {
-      ctx.moveTo(point.x, point.y);
+      ctx.moveTo(point.x, clamp(point.y, -height, height));
+      //ctx.moveTo(point.x, point.y);
     }
     prevPoint = point;
   }
 
+  ctx.lineWidth = 2;
   ctx.stroke();
 }
 
@@ -69,12 +70,13 @@ export function drawFunction(data: CanvasData, f: (x: number) => number) {
   const x = getRange(width, scale, offset.x);
 
   let points: Array<Pos> = [];
-  const fineness = width;
+  const fineness = 3;
+  console.log((x.end - x.start) / (width * fineness));
 
   //console.log(x.end - x.start, width / scale * fineness);
-  for (let i = x.start; i < x.end; i += (x.end - x.start) / (width / 100 * fineness)) {
-    const drawPos = convertPos(data, {x: i, y: f(i)});
-    points.push(drawPos);
+  for (let i = x.start; i <= x.end; i += (x.end - x.start) / (width * fineness)) {
+    //const drawPos = convertPos(data, {x: i, y: f(i)});
+    points.push(convertPos(data, {x: i, y: f(i)}));
   }
 
   drawPoints(data, points);

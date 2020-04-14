@@ -31,19 +31,19 @@ export default function Canvas() {
     drawAxis(canvasData);
     //drawFunction(canvasData, x => x + 10);
     //drawFunction(canvasData, x => Math.sin(x));
-    //drawFunction(canvasData, x => Math.cos(x / 10) * 30);
-    drawFunction(canvasData, x => (Math.tan(x ** 2)));
+    //drawFunction(canvasData, x => Math.cos(x));
+    //drawFunction(canvasData, x => (Math.tan(x ** 2)));
     //drawFunction(canvasData, x => x % 1);
     //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 36);
     //drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));
-    //drawFunctionGrid(canvasData, (x, y) => Math.tan(x) - y);
+    drawFunction(canvasData, (x) => Math.tan(x));
     //drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
-    //drawFunction(canvasData, x => x ** x);
+    drawFunction(canvasData, x => x ** x);
     //drawFunctionGrid(canvasData, (x, y) => x ** x - y);
     //drawFunction(canvasData, (x) => {
     //  let sum = 0;
-    //  for (let n = 0; n <= 10; n++) {
-    //    sum += 0.5 ** n * Math.cos(3 ** n * Math.PI * x)
+    //  for (let n = 0; n <= 100; n++) {
+    //    sum += 0.5 ** n * Math.cos(5 ** n * Math.PI * x)
     //  }
     //  return sum;
     //});
@@ -59,7 +59,7 @@ export default function Canvas() {
       ys = (actualPos.y - moveOffset.y) / scale;
 
     const factor = 1 + (e.deltaY > 0 ? -0.1 : 0.1);
-    setScale(Math.max(10, scale * factor));
+    setScale(Math.max(5, scale * factor));
 
     const offset = {
       x: actualPos.x - xs * (scale * factor),
