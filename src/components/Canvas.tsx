@@ -5,7 +5,6 @@ import {CanvasData, drawAxis, drawFunction, drawFunctionGrid} from '../utils/Gra
 import Pos from '../utils/Pos';
 
 
-
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasWidth = window.innerWidth;
@@ -29,38 +28,20 @@ export default function Canvas() {
       scale: scale,
     };
 
-
     drawAxis(canvasData);
-    //drawFunction(canvasData, x => x + 10);
-    //drawFunction(canvasData, x => Math.sin(x));
-    //drawFunction(canvasData, x => Math.cos(x));
-    //drawFunction(canvasData, x => (Math.tan(x ** 2)));
-    //drawFunction(canvasData, x => x % 1);
-    //drawFunctionGrid(canvasData, (x, y) => x ** 2 + y ** 2 - 36);
-    //drawFunctionGrid(canvasData, (x, y) => Math.sin(x) - Math.cos(y));
-
-    //drawFunction(canvasData, math.compile('tan(x^2)'));
     drawFunction(canvasData, math.compile('tan(x)'));
     drawFunction(canvasData, math.compile('x^x'));
     drawFunction(canvasData, math.compile('1 / (1 + e^(-x))'));
-    //drawFunction(canvasData, x => 1 / (1 + Math.exp(-x)));
-    //drawFunction(canvasData, x => x ** x);
-    //drawFunctionGrid(canvasData, (x, y) => x ** x - y);
-    //drawFunction(canvasData, (x) => {
-    //  let sum = 0;
-    //  for (let n = 0; n <= 100; n++) {
-    //    sum += 0.5 ** n * Math.cos(5 ** n * Math.PI * x)
-    //  }
-    //  return sum;
-    //});
-
   }, [canvasRef, scale, moveOffset, canvasWidth, canvasHeight]);
 
   function handleWheel(e: React.WheelEvent<HTMLCanvasElement>) {
     if (e.deltaY === 0) return;
 
     const
-      actualPos = {x: e.clientX - canvasWidth / 2, y: canvasHeight / 2 - e.clientY},
+      actualPos = {
+        x: e.clientX - canvasWidth / 2,
+        y: canvasHeight / 2 - e.clientY
+      },
       xs = (actualPos.x - moveOffset.x) / scale,
       ys = (actualPos.y - moveOffset.y) / scale;
 
