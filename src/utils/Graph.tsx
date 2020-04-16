@@ -38,7 +38,7 @@ function zoomDiff(minDiff: number) {
 }
 
 function drawXAxisMark(data: CanvasData) {
-  const {ctx, scale, width, offset} = data;
+  const {ctx, scale, width, height, offset} = data;
   const xRange = getRange(width, scale, offset.x);
 
   const xDiff = xRange.end - xRange.start;
@@ -49,17 +49,18 @@ function drawXAxisMark(data: CanvasData) {
   for (let i = xRange.start - (xRange.start % d); i <= xRange.end; i += d) {
     if (Math.abs(i) < 1e-10) continue;
     const pos = convertPos(data, {x: i, y: 0});
-    ctx.fillRect(pos.x - 1, pos.y - 12, 2, 24);
+    ctx.fillRect(pos.x - 1, clamp(pos.y - 12, -12, height - 12), 2, 24);
 
     const posString = (+i.toPrecision(5)).toString();
     const textWidth = ctx.measureText(posString).width;
-    ctx.fillText(posString, pos.x - textWidth / 2, pos.y - 24);
+    const yOffset = (pos.y > height / 2 ? -1 : 1) * 28;
+    const yPos = clamp(pos.y + 7 + yOffset, yOffset + 6, height + yOffset);
+    ctx.fillText(posString, pos.x - textWidth / 2, yPos);
   }
-
 }
 
 function drawYAxisMark(data: CanvasData) {
-  const {ctx, scale, height, offset} = data;
+  const {ctx, scale, width, height, offset} = data;
   const yRange = getRange(height, scale, offset.y);
 
   const yDiff = yRange.end - yRange.start;
@@ -70,11 +71,13 @@ function drawYAxisMark(data: CanvasData) {
   for (let i = yRange.start - (yRange.start % d); i <= yRange.end; i += d) {
     if (Math.abs(i) < 1e-10) continue;
     const pos = convertPos(data, {x: 0, y: i});
-    ctx.fillRect(pos.x - 12, pos.y - 1, 24, 2);
+    ctx.fillRect(clamp(pos.x - 12, -12, width - 12), pos.y - 1, 24, 2);
 
     const posString = (+i.toPrecision(5)).toString();
     const textWidth = ctx.measureText(posString).width;
-    ctx.fillText(posString, pos.x - textWidth - 20, pos.y + 8);
+    const xOffset = (pos.x > width / 2 ? -1 : 1) * 28;
+    const xPos = clamp(pos.x - textWidth + 8 + xOffset, xOffset, width + xOffset - textWidth);
+    ctx.fillText(posString, xPos, pos.y + 8);
   }
 
 }
