@@ -30,8 +30,8 @@ export default function Canvas() {
 
     drawAxis(canvasData);
     drawFunction(canvasData, math.compile('tan(x)'));
-    drawFunction(canvasData, math.compile('x^x'));
-    drawFunction(canvasData, math.compile('1 / (1 + e^(-x))'));
+    //drawFunction(canvasData, math.compile('x^x'));
+    //drawFunction(canvasData, math.compile('1 / (1 + e^(-x))'));
   }, [canvasRef, scale, moveOffset, canvasWidth, canvasHeight]);
 
   function handleWheel(e: React.WheelEvent<HTMLCanvasElement>) {

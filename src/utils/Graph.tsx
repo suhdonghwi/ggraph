@@ -9,18 +9,94 @@ export interface CanvasData {
   scale: number;
 }
 
-export function drawAxis({ctx, width, height, offset}: CanvasData) {
+function mod(n: number, m: number) {
+  return ((n % m) + m) % m;
+}
+
+function zoomSequence(i: number) {
+  const m = mod(i, 3)
+  const n = Math.floor(i / 3);
+  if (m === 0) {
+    return 10 ** n;
+  } else if (m === 1) {
+    return 2 * 10 ** n;
+  } else {
+    return 5 * 10 ** n;
+  }
+}
+
+function zoomDiff(minDiff: number) {
+  let d = 0;
+  for (let i = 10; i > -15; i--) {
+    d = zoomSequence(i);
+    if (d < minDiff) {
+      break;
+    }
+  }
+
+  return d;
+}
+
+function drawXAxisMark(data: CanvasData) {
+  const {ctx, scale, width, offset} = data;
+  const xRange = getRange(width, scale, offset.x);
+
+  const xDiff = xRange.end - xRange.start;
+  const count = Math.min(10, width / 200);
+  const d = zoomDiff(xDiff / count);
+
+  ctx.font = "22px monospace";
+  for (let i = xRange.start - (xRange.start % d); i <= xRange.end; i += d) {
+    if (Math.abs(i) < 1e-10) continue;
+    const pos = convertPos(data, {x: i, y: 0});
+    ctx.fillRect(pos.x - 1, pos.y - 12, 2, 24);
+
+    const posString = (+i.toPrecision(5)).toString();
+    const textWidth = ctx.measureText(posString).width;
+    ctx.fillText(posString, pos.x - textWidth / 2, pos.y - 24);
+  }
+
+}
+
+function drawYAxisMark(data: CanvasData) {
+  const {ctx, scale, height, offset} = data;
+  const yRange = getRange(height, scale, offset.y);
+
+  const yDiff = yRange.end - yRange.start;
+  const count = Math.min(6, height / 300);
+  const d = zoomDiff(yDiff / count);
+
+  ctx.font = "22px monospace";
+  for (let i = yRange.start - (yRange.start % d); i <= yRange.end; i += d) {
+    if (Math.abs(i) < 1e-10) continue;
+    const pos = convertPos(data, {x: 0, y: i});
+    ctx.fillRect(pos.x - 12, pos.y - 1, 24, 2);
+
+    const posString = (+i.toPrecision(5)).toString();
+    const textWidth = ctx.measureText(posString).width;
+    ctx.fillText(posString, pos.x - textWidth - 20, pos.y + 8);
+  }
+
+}
+
+export function drawAxis(data: CanvasData) {
+  const {ctx, width, height, offset} = data;
   const xMiddle = width / 2 + offset.x;
   const yMiddle = height / 2 - offset.y;
+
   ctx.moveTo(0, yMiddle);
   ctx.lineTo(width, yMiddle);
 
-  ctx.lineWidth = 5;
+  ctx.lineWidth = 2;
   ctx.stroke();
 
   ctx.moveTo(xMiddle, 0);
   ctx.lineTo(xMiddle, height);
+  ctx.strokeStyle = "black";
   ctx.stroke();
+
+  drawXAxisMark(data);
+  drawYAxisMark(data);
 }
 
 function convertPos({width, height, offset, scale}: CanvasData, pos: Pos) {
@@ -62,7 +138,8 @@ function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
     prevPoint = point;
   }
 
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "#228be6";
   ctx.stroke();
 }
 
@@ -72,7 +149,6 @@ export function drawFunction(data: CanvasData, f: math.EvalFunction) {
 
   let points: Array<Pos> = [];
   const fineness = 3;
-  console.log((x.end - x.start) / (width * fineness));
 
   //console.log(x.end - x.start, width / scale * fineness);
   for (let i = x.start; i <= x.end; i += (x.end - x.start) / (width * fineness)) {
