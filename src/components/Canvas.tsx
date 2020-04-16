@@ -1,15 +1,14 @@
 import React, {useRef, useEffect, useState} from 'react';
 import * as math from 'mathjs';
 
-import {CanvasData, drawAxis, drawFunction, drawFunctionGrid} from '../utils/Graph';
+import {CanvasData, drawAxis, drawFunction} from '../utils/Graph';
 import Pos from '../utils/Pos';
 
 
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const canvasWidth = window.innerWidth;
-  const canvasHeight = window.innerHeight - 10;
 
+  const [canvasSize, setCanvasSize] = useState([window.innerWidth, window.innerHeight - 10]);
   const [scale, setScale] = useState(100);
   const [moveOffset, setMoveOffset] = useState({x: 0, y: 0});
   const [lastClickPos, setLastClickPos] = useState<Pos | undefined>(undefined);
@@ -17,30 +16,39 @@ export default function Canvas() {
   useEffect(() => {
     const ctx = canvasRef.current!.getContext('2d')!;
 
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.clearRect(0, 0, canvasSize[0], canvasSize[1]);
     ctx.beginPath();
 
     const canvasData: CanvasData = {
       ctx,
-      width: canvasWidth,
-      height: canvasHeight,
+      width: canvasSize[0],
+      height: canvasSize[1],
       offset: moveOffset,
       scale: scale,
     };
 
     drawAxis(canvasData);
     drawFunction(canvasData, math.compile('tan(x)'));
-    //drawFunction(canvasData, math.compile('x^x'));
-    //drawFunction(canvasData, math.compile('1 / (1 + e^(-x))'));
-  }, [canvasRef, scale, moveOffset, canvasWidth, canvasHeight]);
+
+    function handleResize() {
+      setCanvasSize([window.innerWidth, window.innerHeight - 10]);
+    }
+
+    console.log('registering');
+    window.addEventListener('resize', handleResize);
+    return () => {
+      console.log('removing');
+      window.removeEventListener('resize', handleResize);
+    }
+  }, [canvasRef, scale, moveOffset, canvasSize]);
 
   function handleWheel(e: React.WheelEvent<HTMLCanvasElement>) {
     if (e.deltaY === 0) return;
 
     const
       actualPos = {
-        x: e.clientX - canvasWidth / 2,
-        y: canvasHeight / 2 - e.clientY
+        x: e.clientX - canvasSize[0] / 2,
+        y: canvasSize[1] / 2 - e.clientY
       },
       xs = (actualPos.x - moveOffset.x) / scale,
       ys = (actualPos.y - moveOffset.y) / scale;
@@ -100,8 +108,8 @@ export default function Canvas() {
 
   return <canvas
     ref={canvasRef}
-    height={canvasHeight}
-    width={canvasWidth}
+    width={canvasSize[0]}
+    height={canvasSize[1]}
     onWheel={handleWheel}
     onMouseDown={handleMouseDown}
     onMouseLeave={handleMouseUp}
