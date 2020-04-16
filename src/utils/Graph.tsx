@@ -37,6 +37,7 @@ function zoomDiff(minDiff: number) {
   return d;
 }
 
+//TODO: Generalize mark drawing functions
 function drawXAxisMark(data: CanvasData) {
   const {ctx, scale, width, height, offset} = data;
   const xRange = getRange(width, scale, offset.x);
@@ -75,11 +76,10 @@ function drawYAxisMark(data: CanvasData) {
 
     const posString = (+i.toPrecision(5)).toString();
     const textWidth = ctx.measureText(posString).width;
-    const xOffset = (pos.x > width / 2 ? -1 : 1) * 28;
-    const xPos = clamp(pos.x - textWidth + 8 + xOffset, xOffset, width + xOffset - textWidth);
+    const xOffset = pos.x > width / 2 ? -textWidth - 13 : 24;
+    const xPos = clamp(pos.x - 6 + xOffset, xOffset, width + xOffset - textWidth);
     ctx.fillText(posString, xPos, pos.y + 8);
   }
-
 }
 
 export function drawAxis(data: CanvasData) {
