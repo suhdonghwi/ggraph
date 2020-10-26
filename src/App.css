@@ -3,19 +3,3 @@ html, body {
   padding: 0;
 }
 
-div.list {
-  padding: 2rem;
-  background-color: white;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-  position: absolute;
-  top: 2rem;
-  left: 2rem;
-  z-index: 10;
-}
-
-div > ul {
-  padding: 0;
-}
-
-div > ul > li {
-}

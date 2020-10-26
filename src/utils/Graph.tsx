@@ -1,5 +1,5 @@
-import Pos, {midpoint} from './Pos';
-import * as math from 'mathjs';
+import Pos, { midpoint } from "./Pos";
+import * as math from "mathjs";
 
 export interface CanvasData {
   ctx: CanvasRenderingContext2D;
@@ -14,7 +14,7 @@ function mod(n: number, m: number) {
 }
 
 function zoomSequence(i: number) {
-  const m = mod(i, 3)
+  const m = mod(i, 3);
   const n = Math.floor(i / 3);
   if (m === 0) {
     return 10 ** n;
@@ -39,7 +39,7 @@ function zoomDiff(minDiff: number) {
 
 //TODO: Generalize mark drawing functions
 function drawXAxisMark(data: CanvasData) {
-  const {ctx, scale, width, height, offset} = data;
+  const { ctx, scale, width, height, offset } = data;
   const xRange = getRange(width, scale, offset.x);
 
   const xDiff = xRange.end - xRange.start;
@@ -49,7 +49,7 @@ function drawXAxisMark(data: CanvasData) {
   ctx.font = "22px monospace";
   for (let i = xRange.start - (xRange.start % d); i <= xRange.end; i += d) {
     if (Math.abs(i) < 1e-10) continue;
-    const pos = convertPos(data, {x: i, y: 0});
+    const pos = convertPos(data, { x: i, y: 0 });
     ctx.fillRect(pos.x - 1, clamp(pos.y - 12, -12, height - 12), 2, 24);
 
     const posString = (+i.toPrecision(5)).toString();
@@ -61,7 +61,7 @@ function drawXAxisMark(data: CanvasData) {
 }
 
 function drawYAxisMark(data: CanvasData) {
-  const {ctx, scale, width, height, offset} = data;
+  const { ctx, scale, width, height, offset } = data;
   const yRange = getRange(height, scale, offset.y);
 
   const yDiff = yRange.end - yRange.start;
@@ -71,19 +71,23 @@ function drawYAxisMark(data: CanvasData) {
   ctx.font = "22px monospace";
   for (let i = yRange.start - (yRange.start % d); i <= yRange.end; i += d) {
     if (Math.abs(i) < 1e-10) continue;
-    const pos = convertPos(data, {x: 0, y: i});
+    const pos = convertPos(data, { x: 0, y: i });
     ctx.fillRect(clamp(pos.x - 12, -12, width - 12), pos.y - 1, 24, 2);
 
     const posString = (+i.toPrecision(5)).toString();
     const textWidth = ctx.measureText(posString).width;
     const xOffset = pos.x > width / 2 ? -textWidth - 13 : 24;
-    const xPos = clamp(pos.x - 6 + xOffset, xOffset, width + xOffset - textWidth);
+    const xPos = clamp(
+      pos.x - 6 + xOffset,
+      xOffset,
+      width + xOffset - textWidth
+    );
     ctx.fillText(posString, xPos, pos.y + 8);
   }
 }
 
 export function drawAxis(data: CanvasData) {
-  const {ctx, width, height, offset} = data;
+  const { ctx, width, height, offset } = data;
   const xMiddle = width / 2 + offset.x;
   const yMiddle = height / 2 - offset.y;
 
@@ -102,17 +106,17 @@ export function drawAxis(data: CanvasData) {
   drawYAxisMark(data);
 }
 
-function convertPos({width, height, offset, scale}: CanvasData, pos: Pos) {
+function convertPos({ width, height, offset, scale }: CanvasData, pos: Pos) {
   return {
-    x: width / 2 + (pos.x * scale) + offset.x,
-    y: height / 2 - (pos.y * scale) - offset.y
+    x: width / 2 + pos.x * scale + offset.x,
+    y: height / 2 - pos.y * scale - offset.y,
   };
 }
 
 function getRange(size: number, scale: number, offset: number) {
   return {
     start: -(size / 2 + offset) / scale,
-    end: (size / 2 - offset) / scale
+    end: (size / 2 - offset) / scale,
   };
 }
 
@@ -120,7 +124,7 @@ function clamp(num: number, min: number, max: number) {
   return num <= min ? min : num >= max ? max : num;
 }
 
-function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
+function drawPoints({ ctx, height }: CanvasData, points: Array<Pos>) {
   if (points.length === 0) return;
   let prevPoint = points.shift()!;
 
@@ -147,23 +151,30 @@ function drawPoints({ctx, height}: CanvasData, points: Array<Pos>) {
 }
 
 export function drawFunction(data: CanvasData, f: math.EvalFunction) {
-  const {width, offset, scale} = data;
+  const { width, offset, scale } = data;
   const x = getRange(width, scale, offset.x);
 
   let points: Array<Pos> = [];
   const fineness = 0.5;
 
   //console.log(x.end - x.start, width / scale * fineness);
-  for (let i = x.start; i <= x.end; i += (x.end - x.start) / (width * fineness)) {
-    const drawPos = convertPos(data, {x: i, y: f.evaluate({x: i})});
+  for (
+    let i = x.start;
+    i <= x.end;
+    i += (x.end - x.start) / (width * fineness)
+  ) {
+    const drawPos = convertPos(data, { x: i, y: f.evaluate({ x: i }) });
     points.push(drawPos);
   }
 
   drawPoints(data, points);
 }
 
-export function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => number) {
-  const {width, height, offset, scale} = data;
+export function drawFunctionGrid(
+  data: CanvasData,
+  f: (x: number, y: number) => number
+) {
+  const { width, height, offset, scale } = data;
 
   const x = getRange(width, scale, offset.x);
   const y = getRange(height, scale, offset.y);
@@ -175,7 +186,7 @@ export function drawFunctionGrid(data: CanvasData, f: (x: number, y: number) => 
     for (let j = x.start; j < x.end; j += (x.end - x.start) / factor) {
       posVector.push({
         isPositive: f(j, i) >= 0,
-        pos: convertPos(data, {x: j, y: i})
+        pos: convertPos(data, { x: j, y: i }),
       });
     }
     posMatrix.push(posVector);

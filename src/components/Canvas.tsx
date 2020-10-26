@@ -1,24 +1,26 @@
-import React, {useRef, useEffect, useState} from 'react';
-import * as math from 'mathjs';
+import React, { useRef, useEffect, useState } from "react";
+import * as math from "mathjs";
 
-import {CanvasData, drawAxis, drawFunction} from '../utils/Graph';
-import Pos from '../utils/Pos';
-
+import { CanvasData, drawAxis, drawFunction } from "../utils/Graph";
+import Pos from "../utils/Pos";
 
 interface CanvasProps {
   functions: string[];
 }
 
-export default function Canvas({functions}: CanvasProps) {
+export default function Canvas({ functions }: CanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const [canvasSize, setCanvasSize] = useState([window.innerWidth, window.innerHeight - 10]);
+  const [canvasSize, setCanvasSize] = useState([
+    window.innerWidth,
+    window.innerHeight - 10,
+  ]);
   const [scale, setScale] = useState(100);
-  const [moveOffset, setMoveOffset] = useState({x: 0, y: 0});
+  const [moveOffset, setMoveOffset] = useState({ x: 0, y: 0 });
   const [lastClickPos, setLastClickPos] = useState<Pos | undefined>(undefined);
 
   useEffect(() => {
-    const ctx = canvasRef.current!.getContext('2d')!;
+    const ctx = canvasRef.current!.getContext("2d")!;
 
     ctx.clearRect(0, 0, canvasSize[0], canvasSize[1]);
     ctx.beginPath();
@@ -40,19 +42,18 @@ export default function Canvas({functions}: CanvasProps) {
       setCanvasSize([window.innerWidth, window.innerHeight - 10]);
     }
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
-    }
+      window.removeEventListener("resize", handleResize);
+    };
   }, [canvasRef, scale, moveOffset, canvasSize, functions]);
 
   function handleWheel(e: React.WheelEvent<HTMLCanvasElement>) {
     if (e.deltaY === 0) return;
 
-    const
-      actualPos = {
+    const actualPos = {
         x: e.clientX - canvasSize[0] / 2,
-        y: canvasSize[1] / 2 - e.clientY
+        y: canvasSize[1] / 2 - e.clientY,
       },
       xs = (actualPos.x - moveOffset.x) / scale,
       ys = (actualPos.y - moveOffset.y) / scale;
@@ -69,7 +70,7 @@ export default function Canvas({functions}: CanvasProps) {
   }
 
   function handleMouseDown(e: React.MouseEvent<HTMLCanvasElement>) {
-    setLastClickPos({x: e.screenX, y: e.screenY});
+    setLastClickPos({ x: e.screenX, y: e.screenY });
   }
 
   function handleMouseUp() {
@@ -86,7 +87,7 @@ export default function Canvas({functions}: CanvasProps) {
   }
 
   function handleTouchStart(e: React.TouchEvent<HTMLCanvasElement>) {
-    setLastClickPos({x: e.touches[0].screenX, y: e.touches[0].screenY});
+    setLastClickPos({ x: e.touches[0].screenX, y: e.touches[0].screenY });
   }
 
   function handleTouchMove(e: React.TouchEvent<HTMLCanvasElement>) {
@@ -94,13 +95,13 @@ export default function Canvas({functions}: CanvasProps) {
 
     const touchPos = {
       x: e.touches[0].screenX,
-      y: e.touches[0].screenY
+      y: e.touches[0].screenY,
     };
 
     const deltaPos = {
       x: lastClickPos.x - touchPos.x,
       y: lastClickPos.y - touchPos.y,
-    }
+    };
 
     setMoveOffset({
       x: moveOffset.x - deltaPos.x,
@@ -110,17 +111,19 @@ export default function Canvas({functions}: CanvasProps) {
     setLastClickPos(touchPos);
   }
 
-  return <canvas
-    ref={canvasRef}
-    width={canvasSize[0]}
-    height={canvasSize[1]}
-    onWheel={handleWheel}
-    onMouseDown={handleMouseDown}
-    onMouseLeave={handleMouseUp}
-    onMouseUp={handleMouseUp}
-    onMouseMove={handleMouseMove}
-    onTouchStart={handleTouchStart}
-    onTouchMove={handleTouchMove}
-    onTouchEnd={handleMouseUp}
-  />;
+  return (
+    <canvas
+      ref={canvasRef}
+      width={canvasSize[0]}
+      height={canvasSize[1]}
+      onWheel={handleWheel}
+      onMouseDown={handleMouseDown}
+      onMouseLeave={handleMouseUp}
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleMouseUp}
+    />
+  );
 }
