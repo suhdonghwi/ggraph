@@ -151,7 +151,7 @@ export function drawFunction(data: CanvasData, f: math.EvalFunction) {
   const x = getRange(width, scale, offset.x);
 
   let points: Array<Pos> = [];
-  const fineness = 2;
+  const fineness = 0.5;
 
   //console.log(x.end - x.start, width / scale * fineness);
   for (let i = x.start; i <= x.end; i += (x.end - x.start) / (width * fineness)) {

@@ -1,16 +1,12 @@
-import React, {useState} from 'react';
+import React from "react";
 
-import './App.css';
-import Canvas from './components/Canvas';
-import List from './components/List';
+import "./App.css";
+import GraphPage from "./pages/GraphPage";
 
 function App() {
-  const [fs, setFs] = useState<string[]>([]);
-
   return (
     <div className="App">
-      <Canvas functions={fs}/>
-      <List value={fs} onChangeValue={(v) => setFs(v)} />
+      <GraphPage />
     </div>
   );
 }
