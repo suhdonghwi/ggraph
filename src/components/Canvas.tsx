@@ -5,7 +5,11 @@ import {CanvasData, drawAxis, drawFunction} from '../utils/Graph';
 import Pos from '../utils/Pos';
 
 
-export default function Canvas() {
+interface CanvasProps {
+  functions: string[];
+}
+
+export default function Canvas({functions}: CanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [canvasSize, setCanvasSize] = useState([window.innerWidth, window.innerHeight - 10]);
@@ -28,19 +32,19 @@ export default function Canvas() {
     };
 
     drawAxis(canvasData);
-    drawFunction(canvasData, math.compile('tan(x)'));
+    for (var f of functions) {
+      drawFunction(canvasData, math.compile(f));
+    }
 
     function handleResize() {
       setCanvasSize([window.innerWidth, window.innerHeight - 10]);
     }
 
-    console.log('registering');
     window.addEventListener('resize', handleResize);
     return () => {
-      console.log('removing');
       window.removeEventListener('resize', handleResize);
     }
-  }, [canvasRef, scale, moveOffset, canvasSize]);
+  }, [canvasRef, scale, moveOffset, canvasSize, functions]);
 
   function handleWheel(e: React.WheelEvent<HTMLCanvasElement>) {
     if (e.deltaY === 0) return;
@@ -53,8 +57,8 @@ export default function Canvas() {
       xs = (actualPos.x - moveOffset.x) / scale,
       ys = (actualPos.y - moveOffset.y) / scale;
 
-    const factor = 1 + (e.deltaY > 0 ? -0.1 : 0.1);
-    setScale(Math.max(5, scale * factor));
+    const factor = 1 + (e.deltaY > 0 ? -0.05 : 0.05);
+    setScale(Math.max(20, scale * factor));
 
     const offset = {
       x: actualPos.x - xs * (scale * factor),
