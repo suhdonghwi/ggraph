@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 
-interface ListProps {
+interface FunctionListProps {
   value: string[];
   onChangeValue: (arg: string[]) => void;
 }
 
-export default function List({ value, onChangeValue }: ListProps) {
+export default function FunctionList({ value, onChangeValue }: FunctionListProps) {
   const [text, setText] = useState("");
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

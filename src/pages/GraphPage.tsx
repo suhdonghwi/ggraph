@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 import Canvas from '../components/Canvas';
-import List from '../components/List';
+import FunctionList from '../components/FunctionList';
 
 function GraphPage() {
   const [fs, setFs] = useState<string[]>([]);
@@ -9,7 +9,7 @@ function GraphPage() {
   return (
     <main>
       <Canvas functions={fs}/>
-      <List value={fs} onChangeValue={(v) => setFs(v)} />
+      <FunctionList value={fs} onChangeValue={(v) => setFs(v)} />
     </main>
   );
 }
