@@ -2,9 +2,10 @@ import React, { useState } from "react";
 
 import Canvas from "../components/Canvas";
 import FunctionList from "../components/FunctionList";
+import MathFunction from "../utils/MathFunction";
 
 function GraphPage() {
-  const [fs, setFs] = useState<string[]>([]);
+  const [fs, setFs] = useState<MathFunction[]>([new MathFunction("y = sin(x)", "rgb(255, 0, 0)")]);
 
   return (
     <main>

@@ -1,5 +1,5 @@
-import Pos, { midpoint } from "./Pos";
-import * as math from "mathjs";
+import Pos from "./Pos";
+import MathFunction from "../utils/MathFunction";
 
 export interface CanvasData {
   ctx: CanvasRenderingContext2D;
@@ -124,7 +124,7 @@ function clamp(num: number, min: number, max: number) {
   return num <= min ? min : num >= max ? max : num;
 }
 
-function drawPoints({ ctx, height }: CanvasData, points: Array<Pos>) {
+function drawPoints({ ctx, height }: CanvasData, points: Array<Pos>, color: string) {
   if (points.length === 0) return;
   let prevPoint = points.shift()!;
 
@@ -146,11 +146,11 @@ function drawPoints({ ctx, height }: CanvasData, points: Array<Pos>) {
   }
 
   ctx.lineWidth = 4;
-  ctx.strokeStyle = "#228be6";
+  ctx.strokeStyle = color;
   ctx.stroke();
 }
 
-export function drawFunction(data: CanvasData, f: math.EvalFunction) {
+export function drawFunction(data: CanvasData, f: MathFunction) {
   const { width, offset, scale } = data;
   const x = getRange(width, scale, offset.x);
 
@@ -164,16 +164,17 @@ export function drawFunction(data: CanvasData, f: math.EvalFunction) {
     i += (x.end - x.start) / (width * fineness)
   ) {
     try {
-      const drawPos = convertPos(data, { x: i, y: f.evaluate({ x: i }) });
+      const drawPos = convertPos(data, { x: i, y: f.body.evaluate({ x: i }) });
       points.push(drawPos);
     } catch(e) {
       return;
     }
   }
 
-  drawPoints(data, points);
+  drawPoints(data, points, f.color);
 }
 
+/*
 export function drawFunctionGrid(
   data: CanvasData,
   f: (x: number, y: number) => number
@@ -216,3 +217,4 @@ export function drawFunctionGrid(
     }
   }
 }
+ */

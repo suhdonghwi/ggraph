@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components/macro";
 
+import MathFunction from "../utils/MathFunction";
+
 const Container = styled.div`
   padding: 1.2rem 2rem;
   background-color: white;
@@ -33,8 +35,8 @@ const Input = styled.input`
 `;
 
 interface FunctionListProps {
-  value: string[];
-  onChangeValue: (arg: string[]) => void;
+  value: MathFunction[];
+  onChangeValue: (arg: MathFunction[]) => void;
 }
 
 export default function FunctionList({
@@ -45,7 +47,8 @@ export default function FunctionList({
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      onChangeValue(value.concat(text));
+      const randomColor = "hsl(" + (360 * Math.random()) + ", 94%, 67%)";
+      onChangeValue(value.concat(new MathFunction(text, randomColor)));
       setText("");
     }
   };
@@ -54,7 +57,7 @@ export default function FunctionList({
     <Container>
       <List>
         {value.map((f, i) => (
-          <ListItem key={i}>{f}</ListItem>
+          <ListItem key={i}>{f.rawBody}</ListItem>
         ))}
       </List>
       <Input

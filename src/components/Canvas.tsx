@@ -1,11 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
-import * as math from "mathjs";
+import MathFunction from "../utils/MathFunction";
 
 import { CanvasData, drawAxis, drawFunction } from "../utils/Graph";
 import Pos from "../utils/Pos";
 
 interface CanvasProps {
-  functions: string[];
+  functions: MathFunction[];
 }
 
 export default function Canvas({ functions }: CanvasProps) {
@@ -102,7 +102,7 @@ export default function Canvas({ functions }: CanvasProps) {
 
     drawAxis(canvasData);
     for (const f of functions) {
-      drawFunction(canvasData, math.compile(f));
+      drawFunction(canvasData, f);
     }
 
     window.addEventListener("resize", handleResize);
