@@ -102,6 +102,14 @@ const NoButton = styled(ButtonStyle)`
   box-sizing: border-box;
 `;
 
+const ConditionalBr = styled.br`
+  display: none;
+
+  @media screen and (max-width: 470px) {
+    display: block;
+  }
+`;
+
 export default function MainPage() {
   const mathematicians = [
     "피타고라스",
@@ -128,7 +136,7 @@ export default function MainPage() {
           <MainText>
             끄래프로
             <br />
-            방구석{" "}
+            방구석 <ConditionalBr />
             <TextLoop interval={1500} children={mathematicians} />
             <br />
             되어보기.
