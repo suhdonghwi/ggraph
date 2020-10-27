@@ -45,6 +45,8 @@ const ColorSquare = styled.div`
 
   border-radius: 5px;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
+
+  cursor: pointer;
 `;
 
 interface FunctionListProps {
@@ -66,13 +68,20 @@ export default function FunctionList({
     }
   };
 
+  const onClickSquare = (i: number) => {
+    onChangeValue(value.filter((_, j) => j !== i));
+  };
+
   return (
     <Container>
       <List>
         {value.map((f, i) => (
           <ListItem key={i}>
             {f.rawBody}
-            <ColorSquare style={{ backgroundColor: f.color }}/>
+            <ColorSquare
+              style={{ backgroundColor: f.color }}
+              onClick={() => onClickSquare(i)}
+            />
           </ListItem>
         ))}
       </List>
