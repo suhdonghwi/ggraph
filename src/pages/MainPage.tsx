@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components/macro";
+import TextLoop from "react-text-loop";
 
 const Main = styled.main`
   height: 100%;
@@ -33,7 +34,6 @@ const IllustImg = styled.img`
     margin-right: 0;
     margin-bottom: 3rem;
   }
-
 
   @media screen and (max-width: 470px) {
     width: 17rem;
@@ -88,7 +88,7 @@ const ButtonStyle = styled.button`
 `;
 
 const StartButton = styled(ButtonStyle)`
-  background-color: #40C057;
+  background-color: #40c057;
   color: white;
 
   margin-right: 1rem;
@@ -96,13 +96,30 @@ const StartButton = styled(ButtonStyle)`
 
 const NoButton = styled(ButtonStyle)`
   background-color: transparent;
-  border: 3px solid #40C057;
-  color: #40C057;
+  border: 3px solid #40c057;
+  color: #40c057;
 
   box-sizing: border-box;
 `;
 
 export default function MainPage() {
+  const mathematicians = [
+    "피타고라스",
+    "오일러",
+    "가우스",
+    "라이프니츠",
+    "힐베르트",
+    "뉴턴",
+    "폰 노이만",
+    "아인슈타인",
+    "데카르트",
+    "푸앵카레",
+    "아르키메데스",
+    "앤드루 와일즈",
+    "리만",
+    "테런스 타오",
+  ];
+
   return (
     <Main>
       <Container>
@@ -111,13 +128,15 @@ export default function MainPage() {
           <MainText>
             끄래프로
             <br />
-            방구석 피타고라스
+            방구석{" "}
+            <TextLoop interval={1500} children={mathematicians} />
             <br />
             되어보기.
           </MainText>
           <SubText>
             어떤 식이든지 입력하면, 여러분의 손보다 빠른 속도로 끄래프가 화면에
-            그려줍니다. 끄래프와 함께라면 펜을 붙잡고 책상 앞에서 끙끙댈 필요가 없습니다.
+            그려줍니다. 끄래프와 함께라면 펜을 붙잡고 책상 앞에서 끙끙댈 필요가
+            없습니다.
           </SubText>
           <ButtonContainer>
             <StartButton>시작하기</StartButton>
