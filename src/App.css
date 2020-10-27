@@ -9,3 +9,9 @@ html, body, .App {
   font-family: 'Noto Sans KR', sans-serif;
 }
 
+@media screen and (max-width: 1110px) {
+  html, body, .App {
+    height: auto;
+  }
+}
+

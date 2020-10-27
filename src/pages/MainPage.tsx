@@ -14,12 +14,30 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
 
-  width: 58%;
+  width: 65rem;
+
+  @media screen and (max-width: 1110px) {
+    flex-direction: column;
+    width: 40rem;
+    align-items: flex-start;
+
+    margin: 3rem;
+  }
 `;
 
 const IllustImg = styled.img`
-  width: 25rem;
+  width: 23rem;
   margin-right: 7rem;
+
+  @media screen and (max-width: 1110px) {
+    margin-right: 0;
+    margin-bottom: 3rem;
+  }
+
+
+  @media screen and (max-width: 470px) {
+    width: 17rem;
+  }
 `;
 
 const ContentContainer = styled.article``;
@@ -27,8 +45,17 @@ const ContentContainer = styled.article``;
 const MainText = styled.h1`
   color: #212529;
   font-size: 4rem;
+  word-break: keep-all;
 
   margin: 0;
+
+  @media screen and (max-width: 1110px) {
+    font-size: 3rem;
+  }
+
+  @media screen and (max-width: 470px) {
+    font-size: 2.5rem;
+  }
 `;
 
 const SubText = styled.p`
@@ -36,6 +63,10 @@ const SubText = styled.p`
   font-size: 1.4rem;
 
   margin: 2rem 0;
+
+  @media screen and (max-width: 470px) {
+    font-size: 1.1rem;
+  }
 `;
 
 const ButtonContainer = styled.div`
