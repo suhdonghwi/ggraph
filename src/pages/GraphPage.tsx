@@ -6,7 +6,7 @@ import MathFunction from "../utils/MathFunction";
 
 export default function GraphPage() {
   const [fs, setFs] = useState<MathFunction[]>([
-    new MathFunction("y = sin(x)", "rgb(255, 0, 0)"),
+    new MathFunction("y = sin(x)", "#40c057"),
   ]);
 
   return (
