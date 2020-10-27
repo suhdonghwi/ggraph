@@ -1,4 +1,6 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+
 import styled from "styled-components/macro";
 import TextLoop from "react-text-loop";
 
@@ -127,6 +129,11 @@ export default function MainPage() {
     "리만",
     "테런스 타오",
   ];
+  const history = useHistory();
+
+  const onStart = () => {
+    history.push("/graph");
+  };
 
   return (
     <Main>
@@ -147,7 +154,7 @@ export default function MainPage() {
             없습니다.
           </SubText>
           <ButtonContainer>
-            <StartButton>시작하기</StartButton>
+            <StartButton onClick={onStart}>시작하기</StartButton>
             <NoButton>싫어욧</NoButton>
           </ButtonContainer>
         </ContentContainer>

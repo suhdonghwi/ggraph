@@ -1,13 +1,12 @@
 import React from "react";
 
 import "./App.css";
-import GraphPage from "./pages/GraphPage";
-import MainPage from "./pages/MainPage";
+import Root from "./routes";
 
 function App() {
   return (
     <div className="App">
-      <MainPage />
+      <Root />
     </div>
   );
 }
