@@ -24,14 +24,27 @@ const ListItem = styled.li`
   font-size: 1.2rem;
   border-radius: 10px;
   border: 1px solid #dee2e6;
-  padding: 0.5rem 1rem;
+  padding: 0.7rem 1rem;
 
   margin-bottom: 0.5rem;
+
+  display: flex;
+  align-items: center;
 `;
 
 const Input = styled.input`
   font-family: monospace;
   font-size: 1.2rem;
+`;
+
+const ColorSquare = styled.div`
+  margin-left: auto;
+
+  width: 24px;
+  height: 24px;
+
+  border-radius: 5px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
 `;
 
 interface FunctionListProps {
@@ -47,7 +60,7 @@ export default function FunctionList({
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      const randomColor = "hsl(" + (360 * Math.random()) + ", 94%, 67%)";
+      const randomColor = "hsl(" + 360 * Math.random() + ", 94%, 67%)";
       onChangeValue(value.concat(new MathFunction(text, randomColor)));
       setText("");
     }
@@ -57,7 +70,10 @@ export default function FunctionList({
     <Container>
       <List>
         {value.map((f, i) => (
-          <ListItem key={i}>{f.rawBody}</ListItem>
+          <ListItem key={i}>
+            {f.rawBody}
+            <ColorSquare style={{ backgroundColor: f.color }}/>
+          </ListItem>
         ))}
       </List>
       <Input
