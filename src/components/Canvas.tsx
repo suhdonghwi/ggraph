@@ -19,34 +19,9 @@ export default function Canvas({ functions }: CanvasProps) {
   const [moveOffset, setMoveOffset] = useState({ x: 0, y: 0 });
   const [lastClickPos, setLastClickPos] = useState<Pos | undefined>(undefined);
 
-  useEffect(() => {
-    const ctx = canvasRef.current!.getContext("2d")!;
-
-    ctx.clearRect(0, 0, canvasSize[0], canvasSize[1]);
-    ctx.beginPath();
-
-    const canvasData: CanvasData = {
-      ctx,
-      width: canvasSize[0],
-      height: canvasSize[1],
-      offset: moveOffset,
-      scale: scale,
-    };
-
-    drawAxis(canvasData);
-    for (var f of functions) {
-      drawFunction(canvasData, math.compile(f));
-    }
-
-    function handleResize() {
-      setCanvasSize([window.innerWidth, window.innerHeight - 10]);
-    }
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [canvasRef, scale, moveOffset, canvasSize, functions]);
+  function handleResize() {
+    setCanvasSize([window.innerWidth, window.innerHeight - 10]);
+  }
 
   function handleWheel(e: React.WheelEvent<HTMLCanvasElement>) {
     if (e.deltaY === 0) return;
@@ -110,6 +85,31 @@ export default function Canvas({ functions }: CanvasProps) {
 
     setLastClickPos(touchPos);
   }
+
+  useEffect(() => {
+    const ctx = canvasRef.current!.getContext("2d")!;
+
+    ctx.clearRect(0, 0, canvasSize[0], canvasSize[1]);
+    ctx.beginPath();
+
+    const canvasData: CanvasData = {
+      ctx,
+      width: canvasSize[0],
+      height: canvasSize[1],
+      offset: moveOffset,
+      scale: scale,
+    };
+
+    drawAxis(canvasData);
+    for (const f of functions) {
+      drawFunction(canvasData, math.compile(f));
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [canvasRef, scale, moveOffset, canvasSize, functions]);
 
   return (
     <canvas

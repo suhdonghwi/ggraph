@@ -45,8 +45,7 @@ export default function FunctionList({
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      value.push(text);
-      onChangeValue(value);
+      onChangeValue(value.concat(text));
       setText("");
     }
   };

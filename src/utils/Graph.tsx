@@ -163,8 +163,12 @@ export function drawFunction(data: CanvasData, f: math.EvalFunction) {
     i <= x.end;
     i += (x.end - x.start) / (width * fineness)
   ) {
-    const drawPos = convertPos(data, { x: i, y: f.evaluate({ x: i }) });
-    points.push(drawPos);
+    try {
+      const drawPos = convertPos(data, { x: i, y: f.evaluate({ x: i }) });
+      points.push(drawPos);
+    } catch(e) {
+      return;
+    }
   }
 
   drawPoints(data, points);
