@@ -1,6 +1,8 @@
 import Pos from "./Pos";
 import MathFunction from "../utils/MathFunction";
 
+import {midpoint} from "./Pos";
+
 export interface CanvasData {
   ctx: CanvasRenderingContext2D;
   width: number;
@@ -124,7 +126,11 @@ function clamp(num: number, min: number, max: number) {
   return num <= min ? min : num >= max ? max : num;
 }
 
-function drawPoints({ ctx, height }: CanvasData, points: Array<Pos>, color: string) {
+function drawPoints(
+  { ctx, height }: CanvasData,
+  points: Array<Pos>,
+  color: string
+) {
   if (points.length === 0) return;
   let prevPoint = points.shift()!;
 
@@ -166,7 +172,7 @@ export function drawFunction(data: CanvasData, f: MathFunction) {
     try {
       const drawPos = convertPos(data, { x: i, y: f.body.evaluate({ x: i }) });
       points.push(drawPos);
-    } catch(e) {
+    } catch (e) {
       return;
     }
   }
@@ -174,23 +180,19 @@ export function drawFunction(data: CanvasData, f: MathFunction) {
   drawPoints(data, points, f.color);
 }
 
-/*
-export function drawFunctionGrid(
-  data: CanvasData,
-  f: (x: number, y: number) => number
-) {
+export function drawFunctionGrid(data: CanvasData, f: MathFunction) {
   const { width, height, offset, scale } = data;
 
   const x = getRange(width, scale, offset.x);
   const y = getRange(height, scale, offset.y);
-  const factor = 100;
+  const factor = 50;
 
   let posMatrix = [];
   for (let i = y.start; i < y.end; i += (y.end - y.start) / factor) {
     let posVector = [];
     for (let j = x.start; j < x.end; j += (x.end - x.start) / factor) {
       posVector.push({
-        isPositive: f(j, i) >= 0,
+        isPositive: f.body.evaluate({ x: j, y: i }) >= 0,
         pos: convertPos(data, { x: j, y: i }),
       });
     }
@@ -213,8 +215,7 @@ export function drawFunctionGrid(
         }
       }
 
-      drawPoints(data, points);
+      drawPoints(data, points, f.color);
     }
   }
 }
- */

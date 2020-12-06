@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import MathFunction from "../utils/MathFunction";
 
-import { CanvasData, drawAxis, drawFunction } from "../utils/Graph";
+import { CanvasData, drawAxis, drawFunction, drawFunctionGrid } from "../utils/Graph";
 import Pos from "../utils/Pos";
 
 interface CanvasProps {
@@ -102,7 +102,10 @@ export default function Canvas({ functions }: CanvasProps) {
 
     drawAxis(canvasData);
     for (const f of functions) {
-      drawFunction(canvasData, f);
+      if (f.rawBody.startsWith("y"))
+        drawFunction(canvasData, f);
+      else 
+        drawFunctionGrid(canvasData, f);
     }
 
     window.addEventListener("resize", handleResize);
